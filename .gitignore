@@ -1,0 +1,6 @@
+build/
+ForceStop.apk
+*.jks
+*.keystore
+*.idsig
+.DS_Store
