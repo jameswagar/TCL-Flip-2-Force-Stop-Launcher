@@ -56,7 +56,7 @@ The app limits **Stop All** to:
 - user-installed apps or a small allowlist of vetted, nonessential system utilities,
 - packages that are not already marked stopped by Android.
 
-The following phone, launcher, input, root, LSPosed, push, and helper infrastructure is explicitly protected:
+The following phone, launcher, input, root, push, and helper infrastructure is explicitly protected. **Force Stop does not require LSPosed.** If LSPosed has been installed separately on a stock Dumb Co phone, Force Stop recognizes and protects its components as infrastructure:
 
 ```text
 android
