@@ -9,10 +9,13 @@ fi
 rm -rf "$BUILD"
 mkdir -p "$BUILD"
 javac -d "$BUILD" \
+  "$ROOT/src/com/dumbphone/forcestop/ActivePackageParser.java" \
   "$ROOT/src/com/dumbphone/forcestop/RecentTaskInfo.java" \
   "$ROOT/src/com/dumbphone/forcestop/RecentTaskParser.java" \
   "$ROOT/src/com/dumbphone/forcestop/ForceStopPolicy.java" \
+  "$ROOT/tests/com/dumbphone/forcestop/ActivePackageParserTest.java" \
   "$ROOT/tests/com/dumbphone/forcestop/RecentTaskParserTest.java" \
   "$ROOT/tests/com/dumbphone/forcestop/ForceStopPolicyTest.java"
+java -cp "$BUILD" com.dumbphone.forcestop.ActivePackageParserTest
 java -cp "$BUILD" com.dumbphone.forcestop.RecentTaskParserTest
 java -cp "$BUILD" com.dumbphone.forcestop.ForceStopPolicyTest

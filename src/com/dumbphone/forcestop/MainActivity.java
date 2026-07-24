@@ -38,7 +38,7 @@ public final class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(createContentView());
-        loadRecentTasks();
+        loadActiveApps();
     }
 
     private View createContentView() {
@@ -106,18 +106,22 @@ public final class MainActivity extends Activity {
         return view;
     }
 
-    private void loadRecentTasks() {
+    private void loadActiveApps() {
         executor.submit(new Runnable() {
             @Override
             public void run() {
                 try {
-                    RootShell.Result result = RootShell.run("dumpsys activity recents");
-                    if (!result.succeeded()) {
+                    RootShell.Result recentsResult = RootShell.run("dumpsys activity recents");
+                    RootShell.Result processesResult = RootShell.run("ps -A -o NAME");
+                    if (!recentsResult.succeeded() || !processesResult.succeeded()) {
                         showLoadError("Root access is required");
                         return;
                     }
-                    List<RecentTaskInfo> recent = RecentTaskParser.parse(result.stdout);
-                    final List<AppTask> loaded = loadAppDetails(recent);
+                    List<RecentTaskInfo> candidates = RecentTaskParser.parse(recentsResult.stdout);
+                    for (String packageName : ActivePackageParser.parse(processesResult.stdout)) {
+                        candidates.add(new RecentTaskInfo(-1, packageName));
+                    }
+                    final List<AppTask> loaded = loadAppDetails(candidates);
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -128,7 +132,7 @@ public final class MainActivity extends Activity {
                         }
                     });
                 } catch (Exception error) {
-                    showLoadError("Unable to read recent apps");
+                    showLoadError("Unable to read active apps");
                 }
             }
         });
@@ -144,6 +148,11 @@ public final class MainActivity extends Activity {
             }
             try {
                 ApplicationInfo application = packageManager.getApplicationInfo(task.packageName, 0);
+                boolean hasLaunchIntent = packageManager.getLaunchIntentForPackage(task.packageName) != null;
+                if (!ForceStopPolicy.isCandidate(
+                        task.packageName, application.flags, hasLaunchIntent, true)) {
+                    continue;
+                }
                 loaded.add(new AppTask(
                         task.taskId,
                         task.packageName,
@@ -157,7 +166,7 @@ public final class MainActivity extends Activity {
 
     private void updateEmptyState() {
         boolean empty = tasks.isEmpty();
-        emptyView.setText("No recent apps");
+        emptyView.setText("No active apps");
         emptyView.setVisibility(empty ? View.VISIBLE : View.GONE);
         listView.setVisibility(empty ? View.GONE : View.VISIBLE);
         if (!empty) {
@@ -224,7 +233,7 @@ public final class MainActivity extends Activity {
         }
         new AlertDialog.Builder(this)
                 .setTitle("Stop All")
-                .setMessage("Force stop all recent apps?")
+                .setMessage("Force stop all listed safe apps?")
                 .setNegativeButton("Cancel", null)
                 .setPositiveButton("Stop All", new android.content.DialogInterface.OnClickListener() {
                     @Override
@@ -258,7 +267,7 @@ public final class MainActivity extends Activity {
                         if (stoppedCount == toStop.size()) {
                             tasks.clear();
                         } else {
-                            loadRecentTasks();
+                            loadActiveApps();
                         }
                         adapter.notifyDataSetChanged();
                         updateEmptyState();

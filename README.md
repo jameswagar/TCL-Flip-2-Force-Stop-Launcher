@@ -1,17 +1,19 @@
 # TCL Flip 2 Force Stop Launcher
 
-A small, keypad-friendly Android utility for the rooted TCL Flip 2 / Flip Plus (`Gflip6_USCC`, Android 11). It lists safe recent third-party apps and provides explicit root-backed force-stop controls.
+A small, keypad-friendly Android utility for the rooted TCL Flip 2 / Flip Plus (`Gflip6_USCC`, Android 11). It lists active or recent apps that pass a conservative safety policy and provides explicit root-backed force-stop controls.
 
 ## Interface
-
-The app mirrors the phone's simple recent-apps layout:
 
 - Title: **Force Stop**
 - Left soft key: **Stop** — immediately force-stops the selected app
 - Center key: **Open** — launches the selected app
-- Right soft key: **Stop All** — asks for confirmation, then force-stops all listed apps
+- Right soft key: **Stop All** — asks for confirmation, then force-stops every listed safe app
 
-Force stopping is stronger than removing a task from Android's Recents list. A force-stopped app's background services, jobs, alarms, sync, and notifications generally remain stopped until the app is opened again.
+The list is the union of Android's recent tasks and currently running app processes. Only launchable apps that pass the safety policy are shown.
+
+A package that Android confirms as force-stopped is hidden, even if its old task remains in Android's recent-task history. It reappears only after it is deliberately launched and becomes active again.
+
+Force stopping is stronger than removing a task from Android's Recents list. A force-stopped app's background services, jobs, alarms, synchronization, and notifications generally remain stopped until the app is opened again.
 
 ## Root and safety model
 
@@ -23,17 +25,41 @@ am force-stop --user 0 <package>
 
 Magisk's superuser prompt is deliberately retained. Root access remains visible and revocable in Magisk's Superuser screen.
 
-The following critical packages are excluded from both the list and **Stop All**:
+The app limits **Stop All** to:
+
+- active or recent packages,
+- packages with a user-launchable activity,
+- user-installed apps or a small allowlist of vetted, nonessential system utilities,
+- packages that are not already marked stopped by Android.
+
+The following phone, launcher, input, root, LSPosed, push, and helper infrastructure is explicitly protected:
 
 ```text
 android
+com.android.dialer
+com.android.mms
 com.android.phone
+com.android.providers.contacts
+com.android.settings
 com.android.systemui
+com.android.vending
 com.dumbphone.forcestop
+com.dumbphone.mousetrap
+com.dumbphone.nsfilter
+com.dumbphone.recentslauncher
+com.google.android.gms
+com.google.android.gsf
 com.offlineinc.dumbdownlauncher
+com.offlineinc.dumbtt9
+com.offlineinc.voicetotext
+com.topjohnwu.magisk
+inc.whew.android.fakegapps
+org.lsposed.manager
 ```
 
 Package names are validated before being passed to the root shell. The APK installs to internal storage only.
+
+**Operational note:** messaging, navigation, charging-control, and other ordinary apps are safe for the phone to force-stop, but their background behavior and notifications cease until you open them again.
 
 ## Install
 
@@ -89,7 +115,7 @@ You can also revoke root access at any time from Magisk's Superuser screen.
 
 ## Compatibility
 
-This utility is intentionally device-specific and requires a rooted Android device with a working `su` command and the expected Android 11 `dumpsys activity recents` format.
+This utility is intentionally device-specific and requires a rooted Android device with a working `su` command and compatible Android `dumpsys activity recents` and `ps -A -o NAME` output.
 
 ## License
 
