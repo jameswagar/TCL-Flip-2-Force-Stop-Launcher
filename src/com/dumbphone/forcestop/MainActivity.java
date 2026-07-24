@@ -168,6 +168,20 @@ public final class MainActivity extends Activity {
                 new int[]{Color.BLACK, Color.BLACK, Color.BLACK, Color.WHITE});
     }
 
+    private StateListDrawable labelBackground() {
+        StateListDrawable background = new StateListDrawable();
+        ColorDrawable selected = new ColorDrawable(Color.TRANSPARENT);
+        background.addState(new int[]{android.R.attr.state_selected}, selected);
+        background.addState(new int[]{android.R.attr.state_activated}, selected);
+        background.addState(new int[]{android.R.attr.state_pressed}, selected);
+
+        GradientDrawable badge = new GradientDrawable();
+        badge.setColor(Color.argb(190, 0, 0, 0));
+        badge.setCornerRadius(dp(5));
+        background.addState(new int[]{}, badge);
+        return background;
+    }
+
     private StateListDrawable reasonBackground() {
         StateListDrawable background = new StateListDrawable();
         ColorDrawable selected = new ColorDrawable(Color.TRANSPARENT);
@@ -461,7 +475,8 @@ public final class MainActivity extends Activity {
             label.setTextColor(rowTextColors());
             label.setSingleLine(true);
             label.setPadding(dp(10), 0, 0, 0);
-            row.addView(label, new LinearLayout.LayoutParams(0, dp(46), 1f));
+            label.setBackground(labelBackground());
+            row.addView(label, new LinearLayout.LayoutParams(0, dp(28), 1f));
 
             TextView reason = textView(
                     LaunchLabelFormatter.suffix(tasks.get(position).launchReason),
@@ -470,7 +485,9 @@ public final class MainActivity extends Activity {
             reason.setDuplicateParentStateEnabled(true);
             reason.setTextColor(rowTextColors());
             reason.setBackground(reasonBackground());
-            row.addView(reason, new LinearLayout.LayoutParams(dp(34), dp(28)));
+            LinearLayout.LayoutParams reasonLayout = new LinearLayout.LayoutParams(dp(34), dp(28));
+            reasonLayout.setMargins(dp(4), 0, 0, 0);
+            row.addView(reason, reasonLayout);
             return row;
         }
     }
