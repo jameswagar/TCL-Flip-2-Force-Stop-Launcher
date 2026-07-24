@@ -4,16 +4,39 @@ A small, keypad-friendly Android utility for the rooted TCL Flip 2 / Flip Plus (
 
 ## Interface
 
-- Title: **Force Stop**
+- Title: **Force stop**
+- The launcher wallpaper remains visible behind unselected rows, matching the TCL **Recent apps** screen.
+- The selected row reverses to a white background with black app and suffix text; unselected text and suffixes are white.
+- The phone's native bottom menu bar shows **Stop**, **Open**, and **Stop All** at the physical bottom edge.
 - Left soft key: **Stop** — immediately force-stops the selected app
 - Center key: **Open** — launches the selected app
 - Right soft key: **Stop All** — asks for confirmation, then force-stops every listed safe app
 
 The list is the union of Android's recent tasks and currently running app processes. Only launchable apps that pass the safety policy are shown.
 
-A package that Android confirms as force-stopped is hidden, even if its old task remains in Android's recent-task history. It reappears only after it is deliberately launched and becomes active again.
+A package that Android confirms as force-stopped is hidden, even if its old task remains in Android's recent-task history. If Android starts the package again, it reappears with a bracketed launch-reason suffix. The suffix occupies a fixed-width column so it remains visible with long app names. Unselected suffixes use a compact translucent-black badge with white text; the badge disappears and the suffix reverses to black on the selected white row.
 
-Force stopping is stronger than removing a task from Android's Recents list. A force-stopped app's background services, jobs, alarms, synchronization, and notifications generally remain stopped until the app is opened again.
+Force stopping is stronger than removing a task from Android's Recents list. It kills the package and marks it stopped. Most ordinary background work remains suppressed, but privileged or explicitly targeted delivery can restart an app. On this phone, microG/Firebase push delivery can restart Beeper and Telegram after a force-stop; those real restarts are marked **[P]** rather than mistaken for stale task history.
+
+## Launch-reason suffixes
+
+The suffix describes the most recently observed reason the package became active. Android 11 does not expose a single durable public launch-reason record, so Force Stop derives these categories from rooted Activity Manager logs and preserves the latest known category when old log lines roll out.
+
+| Suffix | Category | Meaning |
+| --- | --- | --- |
+| **[U]** | User | Strong evidence of a user-visible launch: launcher icon, Force Stop's **Open**, or another `MAIN`/`LAUNCHER` activity start. |
+| **[P]** | Push | Started by a recognized Firebase, FCM, microG, GCM, or cloud-messaging receiver. |
+| **[A]** | Alarm | Started by an AlarmManager receiver or alarm-backed `PendingIntent`. |
+| **[J]** | Job | Started for JobScheduler, WorkManager, or another scheduled job. |
+| **[B]** | Broadcast | Started by a non-push broadcast, such as connectivity, package, charging, boot, or unlock. |
+| **[S]** | Service | Started for a background, foreground, sticky, or bound service. |
+| **[C]** | Content | Started because another process accessed a content provider. |
+| **[I]** | Inter-app | An activity was started by another app, but user intent cannot be established. |
+| **[R]** | Restart | Android or vendor software restarted a process or service. |
+| **[T]** | Task only | Present only in Android's recent-task history; no live process was observed. |
+| **[?]** | Unknown | Running, but the relevant start record was absent, expired, or ambiguous. |
+
+**[U]** is strong evidence, not proof of a physical key press: accessibility automation, root, or privileged software can imitate a normal activity launch. **[?]** means insufficient evidence, not unsafe or malicious.
 
 ## Root and safety model
 
