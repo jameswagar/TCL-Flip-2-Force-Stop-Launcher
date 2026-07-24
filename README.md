@@ -4,7 +4,7 @@ A small, keypad-friendly Android utility for the rooted TCL Flip 2 / Flip Plus (
 
 ## Interface
 
-- Title: **Force stop**
+- Title: **Force Stop**
 - The launcher wallpaper remains visible behind unselected rows, matching the TCL **Recent apps** screen.
 - The selected row reverses to a white background with black app and suffix text; unselected app names and suffixes use separate translucent-black badges with white text.
 - The phone's native bottom menu bar shows **Stop**, **Open**, and **Stop All** at the physical bottom edge, using TCL Recent apps' black vertical gradient.

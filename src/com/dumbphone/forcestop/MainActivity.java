@@ -64,7 +64,7 @@ public final class MainActivity extends Activity {
         root.setOrientation(LinearLayout.VERTICAL);
         root.setBackgroundColor(Color.TRANSPARENT);
 
-        TextView title = textView("Force stop", 20, Gravity.CENTER);
+        TextView title = textView("Force Stop", 20, Gravity.CENTER);
         title.setTextColor(Color.WHITE);
         root.addView(title, new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, dp(44)));
