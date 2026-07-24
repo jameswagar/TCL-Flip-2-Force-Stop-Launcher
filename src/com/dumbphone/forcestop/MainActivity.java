@@ -90,7 +90,7 @@ public final class MainActivity extends Activity {
             }
         });
 
-        emptyView = textView("Loading…", 17, Gravity.CENTER);
+        emptyView = textView("Loading…", 20, Gravity.CENTER);
         emptyView.setTextColor(Color.WHITE);
         content.addView(emptyView, new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f));
@@ -133,6 +133,15 @@ public final class MainActivity extends Activity {
                     String.class,
                     List.class)
                     .invoke(menuBar, "Stop", "Open", "Stop All", null);
+            if (menuBar instanceof ViewGroup) {
+                View barBackground = ((ViewGroup) menuBar).getChildAt(0);
+                if (barBackground != null) {
+                    GradientDrawable gradient = new GradientDrawable(
+                            GradientDrawable.Orientation.TOP_BOTTOM,
+                            new int[]{0x22000000, 0xDE000000});
+                    barBackground.setBackground(gradient);
+                }
+            }
             fallbackMenu.setVisibility(View.GONE);
         } catch (Exception ignored) {
             fallbackMenu.setVisibility(View.VISIBLE);
@@ -463,14 +472,14 @@ public final class MainActivity extends Activity {
             LinearLayout row = new LinearLayout(MainActivity.this);
             row.setOrientation(LinearLayout.HORIZONTAL);
             row.setGravity(Gravity.CENTER_VERTICAL);
-            row.setPadding(dp(10), dp(5), dp(8), dp(5));
+            row.setPadding(dp(10), dp(4), dp(8), dp(4));
             row.setBackground(rowBackground());
 
             ImageView icon = new ImageView(MainActivity.this);
             icon.setImageDrawable(tasks.get(position).icon);
             row.addView(icon, new LinearLayout.LayoutParams(dp(36), dp(36)));
 
-            TextView label = textView(tasks.get(position).label, 17, Gravity.CENTER_VERTICAL);
+            TextView label = textView(tasks.get(position).label, 18, Gravity.CENTER_VERTICAL);
             label.setDuplicateParentStateEnabled(true);
             label.setTextColor(rowTextColors());
             label.setSingleLine(true);
