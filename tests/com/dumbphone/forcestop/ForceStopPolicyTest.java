@@ -13,6 +13,7 @@ public final class ForceStopPolicyTest {
         assertFalse(ForceStopPolicy.isAllowed("com.google.android.gms"), "push infrastructure blocked");
         assertFalse(ForceStopPolicy.isAllowed("org.lsposed.manager"), "LSPosed manager blocked");
         assertFalse(ForceStopPolicy.isAllowed("com.topjohnwu.magisk"), "Magisk manager blocked");
+        assertFalse(ForceStopPolicy.isAllowed("com.dumbphone.helper"), "helper namespace blocked");
         assertFalse(ForceStopPolicy.isAllowed("com.example.app; reboot"), "shell injection blocked");
 
         assertTrue(ForceStopPolicy.isCandidate(

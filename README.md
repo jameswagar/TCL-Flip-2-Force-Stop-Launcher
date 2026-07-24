@@ -67,10 +67,7 @@ com.android.providers.contacts
 com.android.settings
 com.android.systemui
 com.android.vending
-com.dumbphone.forcestop
-com.dumbphone.mousetrap
-com.dumbphone.nsfilter
-com.dumbphone.recentslauncher
+com.dumbphone.*
 com.google.android.gms
 com.google.android.gsf
 com.offlineinc.dumbdownlauncher

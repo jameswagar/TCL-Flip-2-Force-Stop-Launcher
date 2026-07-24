@@ -22,10 +22,6 @@ public final class ForceStopPolicy {
             "com.android.settings",
             "com.android.systemui",
             "com.android.vending",
-            "com.dumbphone.forcestop",
-            "com.dumbphone.mousetrap",
-            "com.dumbphone.nsfilter",
-            "com.dumbphone.recentslauncher",
             "com.google.android.gms",
             "com.google.android.gsf",
             "com.offlineinc.dumbdownlauncher",
@@ -34,6 +30,9 @@ public final class ForceStopPolicy {
             "com.topjohnwu.magisk",
             "inc.whew.android.fakegapps",
             "org.lsposed.manager"));
+
+    private static final Set<String> BLOCKED_PACKAGE_PREFIXES = new HashSet<>(Arrays.asList(
+            "com.dumbphone."));
 
     private static final Set<String> SAFE_SYSTEM_APPS = new HashSet<>(Arrays.asList(
             "com.android.calculator2",
@@ -52,7 +51,17 @@ public final class ForceStopPolicy {
     public static boolean isAllowed(String packageName) {
         return packageName != null
                 && PACKAGE_NAME.matcher(packageName).matches()
-                && !BLOCKED_PACKAGES.contains(packageName);
+                && !BLOCKED_PACKAGES.contains(packageName)
+                && !hasBlockedPrefix(packageName);
+    }
+
+    private static boolean hasBlockedPrefix(String packageName) {
+        for (String prefix : BLOCKED_PACKAGE_PREFIXES) {
+            if (packageName.startsWith(prefix)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static boolean isCandidate(
