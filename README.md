@@ -138,6 +138,10 @@ You can also revoke root access at any time from Magisk's Superuser screen.
 
 This utility is intentionally device-specific and requires a rooted Android device with a working `su` command and compatible Android `dumpsys activity recents` and `ps -A -o NAME` output.
 
+## Support and contributions
+
+This repository is published as-is. I am not offering support through GitHub Issues and I am not accepting pull requests. If you want to modify or extend the project, fork it and maintain your own version.
+
 ## License
 
 MIT
