@@ -55,7 +55,11 @@ public final class MainActivity extends Activity {
 
     private void configureWindow() {
         getWindow().requestFeature(14);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER
+                | WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        WindowManager.LayoutParams attributes = getWindow().getAttributes();
+        attributes.dimAmount = 0.85f;
+        getWindow().setAttributes(attributes);
         getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
     }
 
