@@ -2,6 +2,8 @@
 
 A small, keypad-friendly Android utility for the rooted TCL Flip 2 / Flip Plus (`Gflip6_USCC`, Android 11). It lists active or recent apps that pass a conservative safety policy and provides explicit root-backed force-stop controls.
 
+![Force Stop showing recent apps on a TCL Flip 2](docs/images/force-stop.png)
+
 ## Interface
 
 - Title: **Force Stop**
